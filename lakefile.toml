@@ -1,0 +1,9 @@
+name = "random-automata-lean"
+version = "1.0.0"
+defaultTargets = ["OverlapWords", "SurvivalEnvelope"]
+
+[[lean_lib]]
+name = "OverlapWords"
+
+[[lean_lib]]
+name = "SurvivalEnvelope"
