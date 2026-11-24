@@ -1,19 +1,23 @@
-# How Random Automata Forget Their Initial State
+# Polynomial-Time Learning of Random Automata from One Label per Word
 
-Lean proofs accompanying Yilin Cheng's paper. The two modules use only the Lean standard library.
+This Lean project accompanies Yilin Cheng’s paper on learning a random binary deterministic finite automaton from uniformly sampled words and their final acceptance bits. It contains 22 modules checking selected steps of the proofs. The paper gives the probabilistic estimates for a shared random transition table and the proof of the learning guarantee.
 
 ## Reproduce the checks
 
-With elan installed, run the following commands from the repository root. The toolchain file selects Lean 4.34.0.
+From the repository root, with elan and Bash installed, run
 
 ```sh
-lean --version
-lake build
+lake exe cache get
+bash verify.sh
 ```
 
-## Correspondence with the paper
+The project pins Lean 4.34.0 in `lean-toolchain` and the Mathlib revision in `lake-manifest.json`. The script compiles all 22 modules in dependency order with warnings treated as errors, then runs `leanchecker --fresh` on each module.
 
-* **First meetings in a logarithmic window.** In [OverlapWords.lean](OverlapWords.lean), `periodic_agrees`, `prefix_periodic`, and `periodic_prefix` show that periodic extension and taking the first g bits are inverse maps between g-bit seeds and blocks whose two length-d substrings at distance g > 0 agree. The paper counts the seeds to obtain a matching probability of 2⁻ᵈ for independent fair input bits, including when the substrings overlap.
-* **From first meetings to survival probabilities.** In [SurvivalEnvelope.lean](SurvivalEnvelope.lean), `blockRatios` propagates a lower bound from a delayed loss inequality, and `upperBarrier` compares a delayed upper recurrence with a supersolution. Both statements use rational sequences and take the recurrence inequalities as hypotheses.
+## Where to start
 
-The paper proves the random-table estimates that supply these hypotheses and uses them to obtain the synchronization and learning results.
+* [OverlapWords.lean](OverlapWords.lean) formalizes the bijection for matching overlapping substrings. [SurvivalEnvelope.lean](SurvivalEnvelope.lean) checks the deterministic recurrence comparisons used in the meeting-time proof.
+* [FourSourceCoefficient.lean](FourSourceCoefficient.lean) evaluates the finite sum for two ordered joins in the four-trajectory calculation.
+* [AdjacentHistory.lean](AdjacentHistory.lean) checks identities used to recover a moment from adjacent history lengths.
+* [DeletionRootGap.lean](DeletionRootGap.lean) checks the deterministic counting and balance steps used to bound the spectral-root gap after deleting states.
+
+The [verification script](verify.sh) lists every module.
